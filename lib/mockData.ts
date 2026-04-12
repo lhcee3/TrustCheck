@@ -14,9 +14,10 @@ interface ScamData {
   safeAccounts: Account[];
 }
 
+// In-memory cache
 let cache: ScamData | null = null;
 
-export async function loadScamAccounts(): Promise<ScamData> {
+async function loadScamAccounts(): Promise<ScamData> {
   if (cache) return cache;
   const filePath = path.join(process.cwd(), "data", "scam-accounts.json");
   const raw = await readFile(filePath, "utf-8");
@@ -26,23 +27,26 @@ export async function loadScamAccounts(): Promise<ScamData> {
 
 export async function findAccountByUpiId(
   upiId: string
-): Promise<{ account: Account | null; status: "scam" | "safe" | "unknown" }> {
+): Promise<{ found: boolean; isScam: boolean; riskScore: number; complaints: number }> {
   const data = await loadScamAccounts();
   const query = upiId.trim().toLowerCase();
 
   const scam = data.scamAccounts.find((a) => a.upiId.toLowerCase() === query);
-  if (scam) return { account: scam, status: "scam" };
+  if (scam) {
+    return { found: true, isScam: true, riskScore: scam.riskScore, complaints: scam.complaints };
+  }
 
   const safe = data.safeAccounts.find((a) => a.upiId.toLowerCase() === query);
-  if (safe) return { account: safe, status: "safe" };
+  if (safe) {
+    return { found: true, isScam: false, riskScore: 0, complaints: 0 };
+  }
 
-  return { account: null, status: "unknown" };
+  return { found: false, isScam: false, riskScore: 0, complaints: 0 };
 }
 
 export async function getRiskScore(
   upiId: string
 ): Promise<{ riskScore: number; complaints: number; found: boolean }> {
-  const { account } = await findAccountByUpiId(upiId);
-  if (!account) return { riskScore: 0, complaints: 0, found: false };
-  return { riskScore: account.riskScore, complaints: account.complaints, found: true };
+  const { found, riskScore, complaints } = await findAccountByUpiId(upiId);
+  return { riskScore, complaints, found };
 }

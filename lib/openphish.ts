@@ -1,35 +1,24 @@
-const FEED_URL = "https://openphish.com/feed.txt";
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const MOCK_PHISHING_URLS = [
+  "sbi-update.vercel.app",
+  "hdfc-verification.com",
+  "paytm-kyc-update.net",
+  "icici-secure-login.xyz",
+  "upi-reward-claim.in",
+  "axis-bank-alert.tk",
+];
 
-let cachedUrls: Set<string> | null = null;
-let cacheTimestamp = 0;
-
-async function getFeed(): Promise<Set<string>> {
-  const now = Date.now();
-  if (cachedUrls && now - cacheTimestamp < CACHE_TTL_MS) return cachedUrls;
-
-  const res = await fetch(FEED_URL, { next: { revalidate: 1800 } });
-  if (!res.ok) throw new Error(`OpenPhish feed fetch failed: ${res.status}`);
-
-  const text = await res.text();
-  cachedUrls = new Set(
-    text
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean)
-  );
-  cacheTimestamp = now;
-  return cachedUrls;
+function normalize(url: string): string {
+  return url
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "");
 }
 
 export async function checkOpenPhish(
   url: string
 ): Promise<{ isPhishing: boolean; source: "OpenPhish" }> {
-  try {
-    const feed = await getFeed();
-    return { isPhishing: feed.has(url.trim()), source: "OpenPhish" };
-  } catch {
-    // Fail open — don't block the user if the feed is unavailable
-    return { isPhishing: false, source: "OpenPhish" };
-  }
+  const normalized = normalize(url);
+  const isPhishing = MOCK_PHISHING_URLS.some((phish) => normalized.includes(phish));
+  return { isPhishing, source: "OpenPhish" };
 }

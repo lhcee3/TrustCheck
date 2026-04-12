@@ -23,25 +23,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { account, status } = await findAccountByUpiId(upiId);
+    const { found, isScam, riskScore, complaints } = await findAccountByUpiId(upiId);
 
-    if (status === "scam" && account) {
+    if (found && isScam) {
       return NextResponse.json(
-        {
-          flagged: true,
-          riskScore: account.riskScore,
-          reason: `This account has ${account.complaints} fraud complaints`,
-        },
+        { flagged: true, riskScore, reason: `This account has ${complaints} fraud complaints` },
         { headers: corsHeaders }
       );
     }
 
     return NextResponse.json(
-      {
-        flagged: false,
-        riskScore: 0,
-        reason: "No complaints found for this account",
-      },
+      { flagged: false, riskScore: 0, reason: "No complaints found for this account" },
       { headers: corsHeaders }
     );
   } catch {
