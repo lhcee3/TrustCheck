@@ -1,3 +1,13 @@
 {
-  "accounts": []
+  "scamAccounts": [
+    {"upiId": "scammer@okhdfcbank", "accountNumber": "1234567890", "ifsc": "HDFC0001234", "complaints": 12, "riskScore": 85},
+    {"upiId": "fraud@sbi", "accountNumber": "9876543210", "ifsc": "SBIN0005678", "complaints": 45, "riskScore": 95},
+    {"upiId": "fake-refund@paytm", "accountNumber": "5555555555", "ifsc": "PYTM0000123", "complaints": 8, "riskScore": 75},
+    {"upiId": "kyc-expiry@icici", "accountNumber": "4444444444", "ifsc": "ICIC0004567", "complaints": 23, "riskScore": 88},
+    {"upiId": "digital-arrest@axis", "accountNumber": "7777777777", "ifsc": "UTIB0007890", "complaints": 31, "riskScore": 92}
+  ],
+  "safeAccounts": [
+    {"upiId": "friend@okicici", "accountNumber": "1111111111", "ifsc": "ICIC0000001", "complaints": 0, "riskScore": 0},
+    {"upiId": "mother@okhdfc", "accountNumber": "2222222222", "ifsc": "HDFC0009999", "complaints": 0, "riskScore": 0}
+  ]
 }
