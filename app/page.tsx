@@ -1,81 +1,80 @@
 import Link from "next/link";
-import { Building2, ScanSearch } from "lucide-react";
+import { Zap, Shield, CheckCircle, ArrowRight } from "lucide-react";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950 text-white">
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-20 gap-16">
-        {/* Hero */}
-        <section className="text-center max-w-3xl flex flex-col items-center gap-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 px-4 py-1.5 text-sm text-indigo-300">
-            Real-Time Fraud Prevention
+    <div className="min-h-screen bg-[#F7F6F2] flex flex-col">
+      {/* Nav */}
+      <header className="bg-white border-b border-stone-100 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[#2D6A4F] flex items-center justify-center">
+            <Zap className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-bold text-slate-800">XpressBank</span>
+        </div>
+        <Link
+          href="/xpressbank/login"
+          className="rounded-xl bg-[#2D6A4F] hover:bg-[#245a42] transition-colors px-5 py-2 text-sm font-semibold text-white"
+        >
+          Login
+        </Link>
+      </header>
+
+      {/* Hero */}
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-20 gap-12 text-center">
+        <div className="flex flex-col items-center gap-6 max-w-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-[#2D6A4F] flex items-center justify-center shadow-lg">
+            <Zap className="w-8 h-8 text-white" />
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight">
-            TrustCheck —{" "}
-            <span className="text-indigo-400">Real-Time Fraud Prevention</span>{" "}
-            for Indian Banking
-          </h1>
-
-          <p className="text-gray-400 text-lg sm:text-xl max-w-xl">
-            Protect your customers before money moves. Instant UPI ID and link
-            risk scoring powered by live threat intelligence.
-          </p>
-
-          {/* Stat */}
-          <div className="rounded-2xl bg-red-500/10 border border-red-500/20 px-8 py-6">
-            <p className="text-3xl sm:text-4xl font-bold text-red-400">₹1,500+ Crores</p>
-            <p className="text-gray-400 mt-1 text-sm sm:text-base">
-              lost annually to UPI fraud in India
+          <div className="flex flex-col gap-3">
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-800 leading-tight tracking-tight">
+              Banking that keeps<br />
+              <span className="text-[#2D6A4F]">your money safe</span>
+            </h1>
+            <p className="text-slate-500 text-lg max-w-lg mx-auto">
+              XpressBank is a modern digital bank with built-in fraud detection — every transaction is verified before it goes through.
             </p>
           </div>
-        </section>
 
-        {/* Cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
-          <div className="flex flex-col gap-4 rounded-2xl bg-gray-900 border border-gray-800 p-8 hover:border-indigo-500/50 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <Building2 className="w-5 h-5" />
+          {/* Fraud protection badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-2xl bg-white border border-emerald-100 shadow-sm px-5 py-3">
+            <Shield className="w-5 h-5 text-[#2D6A4F]" />
+            <div className="text-left">
+              <p className="text-sm font-semibold text-slate-800">Fraud Protection Integrated</p>
+              <p className="text-xs text-slate-400">Real-time UPI fraud detection on every payment</p>
             </div>
-            <div>
-              <h2 className="text-xl font-semibold">XYZ Bank Demo</h2>
-              <p className="text-gray-400 text-sm mt-1">
-                See TrustCheck integrated into a live banking payment flow.
-              </p>
-            </div>
-            <Link
-              href="/bank-demo"
-              className="mt-auto inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition-colors px-5 py-2.5 text-sm font-medium"
-            >
-              <Building2 className="w-4 h-4" />
-              Open Bank Demo
-            </Link>
+            <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium ml-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Active
+            </span>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-2xl bg-gray-900 border border-gray-800 p-8 hover:border-emerald-500/50 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <ScanSearch className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold">Checker Tool</h2>
-              <p className="text-gray-400 text-sm mt-1">
-                Manually check any UPI ID or link for fraud risk in real time.
-              </p>
-            </div>
-            <Link
-              href="/checker"
-              className="mt-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition-colors px-5 py-2.5 text-sm font-medium"
-            >
-              <ScanSearch className="w-4 h-4" />
-              Open Checker
-            </Link>
-          </div>
-        </section>
+          <Link
+            href="/xpressbank/login"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#2D6A4F] hover:bg-[#245a42] transition-colors px-8 py-3.5 text-sm font-semibold text-white shadow-md"
+          >
+            Open Your Account <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Feature pills */}
+        <div className="flex flex-wrap items-center justify-center gap-3 max-w-xl">
+          {[
+            "Real-time fraud detection",
+            "Instant UPI transfers",
+            "30-second fraud cooldown",
+            "Zero-fee transactions",
+            "KYC verified accounts",
+          ].map((f) => (
+            <span key={f} className="inline-flex items-center gap-1.5 rounded-full bg-white border border-stone-200 px-4 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
+              <CheckCircle className="w-3.5 h-3.5 text-[#2D6A4F]" /> {f}
+            </span>
+          ))}
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-800 px-6 py-6 flex items-center justify-center gap-2 text-sm text-gray-500">
-        Built by <span className="text-gray-300 font-medium">Team Tiger Claw</span>
+      <footer className="border-t border-stone-100 px-6 py-5 text-center text-xs text-slate-400">
+        © 2026 XpressBank · Secure Digital Banking
       </footer>
     </div>
   );

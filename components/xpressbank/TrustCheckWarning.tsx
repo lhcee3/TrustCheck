@@ -1,0 +1,92 @@
+"use client";
+
+import { useState } from "react";
+import { AlertTriangle, ShieldAlert } from "lucide-react";
+import CooldownTimer from "./CooldownTimer";
+
+interface Props {
+  riskScore: number;
+  reason: string;
+  onCancel: () => void;
+  onContinue: () => void;
+}
+
+export default function TrustCheckWarning({ riskScore, reason, onCancel, onContinue }: Props) {
+  const [timerDone, setTimerDone] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
+        {/* Red header */}
+        <div className="bg-red-600 px-6 py-5 flex flex-col items-center gap-2 text-center">
+          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-white" />
+          </div>
+          <h2 className="text-white font-bold text-base">⚠️ High-Risk Transaction Detected</h2>
+          <p className="text-red-100 text-xs">This transaction has been flagged as high risk</p>
+        </div>
+
+        <div className="p-6 flex flex-col gap-5">
+          {/* Risk score + timer */}
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-slate-500">Risk Score</span>
+              <span className="text-5xl font-black text-red-600">{riskScore}</span>
+              <span className="text-xs text-slate-400">/ 100</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <CooldownTimer initialSeconds={30} onComplete={() => setTimerDone(true)} />
+              <span className="text-xs text-slate-400">seconds remaining</span>
+            </div>
+          </div>
+
+          {/* Reason */}
+          <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2">
+            <ShieldAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{reason}</p>
+          </div>
+
+          {/* Checkbox */}
+          <label className="flex items-start gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={confirmed}
+              onChange={(e) => setConfirmed(e.target.checked)}
+              className="mt-0.5 w-4 h-4 accent-red-500 cursor-pointer"
+            />
+            <span className="text-sm text-slate-600">
+              I confirm this is NOT a scam and I take full responsibility for this transaction.
+            </span>
+          </label>
+
+          {/* Tip */}
+          <p className="text-xs text-slate-400 italic">
+            💡 Banks never ask you to send money to a different account.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={onCancel}
+              className="w-full rounded-xl bg-red-600 hover:bg-red-700 transition-colors py-2.5 text-sm font-semibold text-white"
+            >
+              Cancel Transaction
+            </button>
+            <button
+              onClick={onContinue}
+              disabled={!timerDone || !confirmed}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors py-2.5 text-sm font-medium text-slate-600"
+            >
+              {!timerDone ? "Continue Anyway (wait for timer)" : "Continue Anyway"}
+            </button>
+          </div>
+
+          <button className="text-xs text-red-500 hover:underline text-center" onClick={onCancel}>
+            Report this as scam →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
