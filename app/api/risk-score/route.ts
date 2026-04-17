@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findAccountByUpiId } from "@/lib/mockData";
 import { analyzeTransaction, recordTransaction } from "@/lib/trustcheckAgent";
+import { readData, writeData } from "@/lib/dataStore";
+
+interface Notification { id: string; userId: string; type: string; title: string; body: string; read: boolean; timestamp: string; }
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -43,6 +46,23 @@ export async function POST(req: NextRequest) {
     if (record) {
       const status = result.level === "high" ? "blocked" : result.level === "medium" ? "risky" : "safe";
       recordTransaction(userId, upiId, amount, status);
+    }
+
+    // Write fraud alert notification if flagged
+    if (result.flagged) {
+      try {
+        const notifs = readData<Notification[]>("notifications.json");
+        notifs.unshift({
+          id: `n_${Date.now()}`,
+          userId: "user_ramesh_001",
+          type: "alert",
+          title: "🚨 Fraud Attempt Detected",
+          body: `Payment to ${upiId} flagged — ${result.reasons[0] ?? "High risk recipient"}`,
+          read: false,
+          timestamp: new Date().toISOString(),
+        });
+        writeData("notifications.json", notifs);
+      } catch { /* non-fatal */ }
     }
 
     return NextResponse.json(

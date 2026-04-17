@@ -5,9 +5,10 @@ import { useState, useEffect } from "react";
 interface Props {
   initialSeconds?: number;
   onComplete: () => void;
+  onTick?: (s: number) => void;
 }
 
-export default function CooldownTimer({ initialSeconds = 30, onComplete }: Props) {
+export default function CooldownTimer({ initialSeconds = 30, onComplete, onTick }: Props) {
   const [seconds, setSeconds] = useState(initialSeconds);
   const size = 100;
   const r = 38;
@@ -16,9 +17,9 @@ export default function CooldownTimer({ initialSeconds = 30, onComplete }: Props
 
   useEffect(() => {
     if (seconds <= 0) { onComplete(); return; }
-    const t = setInterval(() => setSeconds((s) => s - 1), 1000);
+    const t = setInterval(() => setSeconds((s) => { const next = s - 1; onTick?.(next); return next; }), 1000);
     return () => clearInterval(t);
-  }, [seconds, onComplete]);
+  }, [seconds, onComplete, onTick]);
 
   const stroke = seconds > 10 ? "#ef4444" : "#f97316";
 

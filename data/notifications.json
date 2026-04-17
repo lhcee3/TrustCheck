@@ -1,0 +1,10 @@
+[
+  { "id": "n1", "userId": "user_ramesh_001", "type": "alert", "title": "🚨 Fraud Attempt Blocked", "body": "Payment of ₹25,000 to scammer@okhdfcbank was blocked. This UPI has 12 fraud complaints.", "read": false, "timestamp": "2026-04-08T14:01:00.000Z" },
+  { "id": "n2", "userId": "user_ramesh_001", "type": "alert", "title": "🚨 High-Risk Transaction Blocked", "body": "Payment of ₹50,000 to bank-upgrade@okhdfc was blocked. Risk score: 99/100.", "read": false, "timestamp": "2026-04-17T15:31:00.000Z" },
+  { "id": "n3", "userId": "user_ramesh_001", "type": "transaction", "title": "₹52,000 Received", "body": "Salary credited from Infosys Ltd. Your balance is now ₹84,320.50.", "read": true, "timestamp": "2026-04-01T09:01:00.000Z" },
+  { "id": "n4", "userId": "user_ramesh_001", "type": "transaction", "title": "₹18,500 Sent", "body": "Rent paid to Sai Residency successfully.", "read": true, "timestamp": "2026-04-02T10:31:00.000Z" },
+  { "id": "n5", "userId": "user_ramesh_001", "type": "transaction", "title": "₹5,000 Received", "body": "Priya Sharma sent you ₹5,000 for dinner split.", "read": false, "timestamp": "2026-04-06T19:31:00.000Z" },
+  { "id": "n6", "userId": "user_ramesh_001", "type": "system", "title": "✅ KYC Verified", "body": "Your KYC is fully verified. You now have access to all XpressBank features.", "read": true, "timestamp": "2026-03-20T10:00:00.000Z" },
+  { "id": "n7", "userId": "user_ramesh_001", "type": "system", "title": "🆕 Contacts Feature Live", "body": "Save your frequent contacts for faster payments. Try it now!", "read": false, "timestamp": "2026-04-10T12:00:00.000Z" },
+  { "id": "n8", "userId": "user_ramesh_001", "type": "system", "title": "🔒 Security Tip", "body": "Never share your UPI PIN with anyone. XpressBank will never ask for it.", "read": true, "timestamp": "2026-04-05T09:00:00.000Z" }
+]

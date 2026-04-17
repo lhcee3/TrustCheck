@@ -9,9 +9,5 @@ export default function XpressBankLayout({ children }: { children: React.ReactNo
     }
   }, []);
 
-  return (
-    <div className="min-h-screen bg-[#F7F6F2]" style={{ fontFamily: "'Inter', sans-serif" }}>
-      {children}
-    </div>
-  );
+  return <div className="min-h-screen bg-[#F7F6F2]">{children}</div>;
 }

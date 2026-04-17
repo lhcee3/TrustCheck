@@ -1,0 +1,21 @@
+[
+  {
+    "id": "user_ramesh_001",
+    "name": "Ramesh Kumar",
+    "email": "test@gmail.com",
+    "passwordHash": "Password",
+    "phone": "+91 98765 43210",
+    "upiId": "ramesh@xpressbank",
+    "accountNumber": "XPRS 0042 8819 3301",
+    "ifsc": "XPRS0001HYD",
+    "branch": "Hyderabad Main",
+    "accountType": "Savings",
+    "balance": 84320.50,
+    "avatarInitials": "RK",
+    "joinedDate": "2022-03-15",
+    "kycStatus": "verified",
+    "linkedCards": [
+      { "last4": "4291", "network": "Visa", "expiry": "08/27" }
+    ]
+  }
+]

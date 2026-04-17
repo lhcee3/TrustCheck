@@ -15,6 +15,7 @@ interface Props {
 export default function TrustCheckWarning({ riskScore, level, reasons, onCancel, onContinue }: Props) {
   const [timerDone, setTimerDone] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [remaining, setRemaining] = useState(30);
 
   const isHigh = level === "high";
   const headerBg = isHigh ? "bg-red-600" : "bg-amber-500";
@@ -44,7 +45,7 @@ export default function TrustCheckWarning({ riskScore, level, reasons, onCancel,
               <span className="text-xs text-slate-400">/ 100</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <CooldownTimer initialSeconds={30} onComplete={() => setTimerDone(true)} />
+              <CooldownTimer initialSeconds={30} onComplete={() => setTimerDone(true)} onTick={setRemaining} />
               <span className="text-xs text-slate-400">seconds remaining</span>
             </div>
           </div>
@@ -91,7 +92,7 @@ export default function TrustCheckWarning({ riskScore, level, reasons, onCancel,
               disabled={!timerDone || !confirmed}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors py-2.5 text-sm font-medium text-slate-600"
             >
-              {!timerDone ? `Continue Anyway (wait ${30}s)` : "Continue Anyway"}
+              {!timerDone ? `Continue Anyway (wait ${remaining}s)` : "Continue Anyway"}
             </button>
           </div>
 

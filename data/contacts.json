@@ -1,0 +1,12 @@
+[
+  { "id": "c1", "userId": "user_ramesh_001", "name": "Priya Sharma", "upiId": "priya@okicici", "bank": "ICICI", "avatarInitials": "PS", "lastPaid": "2026-04-06", "totalPaid": 12500 },
+  { "id": "c2", "userId": "user_ramesh_001", "name": "Arjun Mehta", "upiId": "arjun@okaxis", "bank": "Axis", "avatarInitials": "AM", "lastPaid": "2026-04-13", "totalPaid": 8200 },
+  { "id": "c3", "userId": "user_ramesh_001", "name": "Sneha Reddy", "upiId": "sneha@okhdfc", "bank": "HDFC", "avatarInitials": "SR", "lastPaid": "2026-04-15", "totalPaid": 5600 },
+  { "id": "c4", "userId": "user_ramesh_001", "name": "Vijay Nair", "upiId": "vijay@okicici", "bank": "ICICI", "avatarInitials": "VN", "lastPaid": "2026-04-17", "totalPaid": 6000 },
+  { "id": "c5", "userId": "user_ramesh_001", "name": "Anita Bose", "upiId": "anita@okhdfc", "bank": "HDFC", "avatarInitials": "AB", "lastPaid": "2026-04-21", "totalPaid": 4500 },
+  { "id": "c6", "userId": "user_ramesh_001", "name": "Kiran Rao", "upiId": "kiran.rao@okaxis", "bank": "Axis", "avatarInitials": "KR", "lastPaid": "2026-04-19", "totalPaid": 3200 },
+  { "id": "c7", "userId": "user_ramesh_001", "name": "Deepak Joshi", "upiId": "deepak@okicici", "bank": "ICICI", "avatarInitials": "DJ", "lastPaid": "2026-04-23", "totalPaid": 7800 },
+  { "id": "c8", "userId": "user_ramesh_001", "name": "Meera Iyer", "upiId": "meera@okaxis", "bank": "Axis", "avatarInitials": "MI", "lastPaid": "2026-04-26", "totalPaid": 2200 },
+  { "id": "c9", "userId": "user_ramesh_001", "name": "Suresh Pillai", "upiId": "suresh@okhdfc", "bank": "HDFC", "avatarInitials": "SP", "lastPaid": "2026-04-28", "totalPaid": 4100 },
+  { "id": "c10", "userId": "user_ramesh_001", "name": "Ravi Teja", "upiId": "ravi@okicici", "bank": "ICICI", "avatarInitials": "RT", "lastPaid": "2026-03-15", "totalPaid": 9000 }
+]
