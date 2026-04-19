@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Zap, Shield, CheckCircle, ArrowRight, Smartphone, Bell, Share } from "lucide-react";
+import { Zap, Shield, CheckCircle, ArrowRight, Smartphone, Bell, Share, Activity } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 type Platform = "android" | "ios" | "desktop" | "unknown";
 
@@ -216,6 +217,23 @@ export default function LandingPage() {
               <CheckCircle className="w-3.5 h-3.5 text-[#2D6A4F]" /> {f}
             </span>
           ))}
+        </div>
+
+        {/* Live monitor QR */}
+        <div className="flex flex-col items-center gap-4 bg-white border border-stone-200 rounded-3xl px-8 py-6 shadow-sm max-w-sm w-full">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <Activity className="w-4 h-4 text-[#2D6A4F]" /> Live Fraud Monitor
+          </div>
+          <div className="bg-[#F7F6F2] p-3 rounded-2xl">
+            <QRCodeSVG value={`${typeof window !== "undefined" ? window.location.origin : ""}/monitor`} size={120} fgColor="#2D6A4F" />
+          </div>
+          <div className="text-center">
+            <p className="text-xs font-medium text-slate-700">Scan with your phone</p>
+            <p className="text-xs text-slate-400 mt-0.5">See live fraud alerts as they happen</p>
+          </div>
+          <Link href="/monitor" className="text-xs text-[#2D6A4F] font-medium hover:underline flex items-center gap-1">
+            Open Monitor <ArrowRight className="w-3 h-3" />
+          </Link>
         </div>
       </main>
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readData, writeData } from "@/lib/dataStore";
+import { publishTransactionEvent } from "@/lib/qstash/producer";
 
 interface Transaction {
   id: string; userId: string; type: string; amount: number;
@@ -71,6 +72,19 @@ export async function POST(req: NextRequest) {
     const txns = readData<Transaction[]>("transactions.json");
     txns.unshift(newTxn);
     writeData("transactions.json", txns);
+
+    publishTransactionEvent({
+      id: newTxn.id,
+      userId: "user_ramesh_001",
+      amount,
+      recipientUpi,
+      recipientName: newTxn.recipientName,
+      status: "success",
+      riskScore,
+      trustCheckFlagged,
+      timestamp: newTxn.timestamp,
+      type: "sent",
+    }).catch(() => {});
 
     return NextResponse.json({ transaction: newTxn, newBalance: users[userIdx].balance }, { status: 201 });
   } catch {

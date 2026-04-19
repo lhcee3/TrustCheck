@@ -10,12 +10,16 @@
     "ifsc": "XPRS0001HYD",
     "branch": "Hyderabad Main",
     "accountType": "Savings",
-    "balance": 84320.50,
+    "balance": 58820.5,
     "avatarInitials": "RK",
     "joinedDate": "2022-03-15",
     "kycStatus": "verified",
     "linkedCards": [
-      { "last4": "4291", "network": "Visa", "expiry": "08/27" }
+      {
+        "last4": "4291",
+        "network": "Visa",
+        "expiry": "08/27"
+      }
     ]
   }
 ]

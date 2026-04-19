@@ -1,21 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkOpenPhish } from "@/lib/openphish";
-import { checkPhishTank } from "@/lib/phishtank";
+import { checkUrlWithGoogleSafeBrowsing } from "@/lib/googleSafeBrowsing/checkUrl";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
-
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error("timeout")), ms)
-    ),
-  ]);
-}
 
 function getRecommendation(riskScore: number): string {
   if (riskScore > 70) return "HOLD";
@@ -25,38 +16,38 @@ function getRecommendation(riskScore: number): string {
 
 async function handleRequest(url: string | null) {
   if (!url) {
-    return NextResponse.json(
-      { error: "url is required" },
-      { status: 400, headers: corsHeaders }
-    );
+    return NextResponse.json({ error: "url is required" }, { status: 400, headers: corsHeaders });
   }
 
   try {
-    const [openphishResult, phishtankResult] = await Promise.all([
-      withTimeout(checkOpenPhish(url), 5000),
-      withTimeout(checkPhishTank(url), 5000),
+    const [openphishResult, googleResult] = await Promise.all([
+      checkOpenPhish(url).catch(() => ({ isPhishing: false, source: "OpenPhish" as const })),
+      checkUrlWithGoogleSafeBrowsing(url).catch(() => null),
     ]);
 
-    const flaggedCount = [openphishResult.isPhishing, phishtankResult.isPhishing].filter(Boolean).length;
-    const riskScore = flaggedCount === 2 ? 95 : flaggedCount === 1 ? 75 : 10;
+    const googleFlagged = googleResult?.isMalicious ?? false;
+    const openphishFlagged = openphishResult.isPhishing;
+
+    // Google Safe Browsing is authoritative — instant high score
+    let riskScore = 10;
+    if (googleFlagged) riskScore = 95;
+    else if (openphishFlagged) riskScore = 75;
 
     return NextResponse.json(
       {
         url,
         riskScore,
         sources: {
-          openphish: openphishResult.isPhishing,
-          phishtank: phishtankResult.isPhishing,
+          googleSafeBrowsing: googleFlagged,
+          threats: googleResult?.threats ?? [],
+          openphish: openphishFlagged,
         },
         recommendation: getRecommendation(riskScore),
       },
       { headers: corsHeaders }
     );
   } catch {
-    return NextResponse.json(
-      { error: "Failed to check URL" },
-      { status: 500, headers: corsHeaders }
-    );
+    return NextResponse.json({ error: "Failed to check URL" }, { status: 500, headers: corsHeaders });
   }
 }
 
@@ -65,8 +56,7 @@ export async function OPTIONS() {
 }
 
 export async function GET(req: NextRequest) {
-  const url = req.nextUrl.searchParams.get("url");
-  return handleRequest(url);
+  return handleRequest(req.nextUrl.searchParams.get("url"));
 }
 
 export async function POST(req: NextRequest) {
@@ -74,9 +64,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     return handleRequest(body?.url ?? null);
   } catch {
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400, headers: corsHeaders }
-    );
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400, headers: corsHeaders });
   }
 }
