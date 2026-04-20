@@ -53,8 +53,11 @@ export async function POST(req: NextRequest) {
       if (llm) { llmScore = llm.riskScore; llmReasons = llm.reasons; }
     } catch { /* non-fatal */ }
 
-    // ── 4. Combined score: 60% rule + 40% LLM ───────────────────────────────
-    const combinedScore = Math.min(100, Math.round(0.6 * ruleResult.riskScore + 0.4 * llmScore));
+    // ── 4. Combined score: rule-based is authoritative, LLM adds signal ────
+    // If rule engine already flags as high, don't let LLM dilute it
+    const combinedScore = ruleResult.riskScore >= 70
+      ? Math.min(100, Math.round(0.8 * ruleResult.riskScore + 0.2 * llmScore))
+      : Math.min(100, Math.round(0.6 * ruleResult.riskScore + 0.4 * llmScore));
     const allReasons = [...ruleResult.reasons, ...llmReasons.filter((r) => !ruleResult.reasons.includes(r))];
     const level = combinedScore >= 70 ? "high" : combinedScore >= 30 ? "medium" : "low";
     let flagged = level === "high";
@@ -85,9 +88,10 @@ export async function POST(req: NextRequest) {
       recordTransaction(userId, upiId, amount, status);
     }
 
-    // ── 7. Write fraud notification if flagged ───────────────────────────────
+    // ── 7. Write fraud notification + blocked tx if flagged ─────────────────
     if (flagged) {
       try {
+        const now = new Date().toISOString();
         const notifs = readData<Notification[]>("notifications.json");
         notifs.unshift({
           id: `n_${Date.now()}`,
@@ -96,11 +100,30 @@ export async function POST(req: NextRequest) {
           title: "🚨 Fraud Attempt Detected",
           body: `Payment to ${upiId} blocked — ${gemini.explanation || allReasons[0] || "High risk recipient"}`,
           read: false,
-          timestamp: new Date().toISOString(),
+          timestamp: now,
         });
         writeData("notifications.json", notifs);
-      } catch { /* non-fatal */ }
 
+        // Write blocked tx so monitor shows it immediately in red
+        const txns = readData<Transaction[]>("transactions.json");
+        txns.unshift({
+          id: `txn_blocked_${Date.now()}`,
+          userId: "user_ramesh_001",
+          type: "sent",
+          amount,
+          recipientName: upiId,
+          recipientUpi: upiId,
+          senderName: "Ramesh Kumar",
+          senderUpi: "ramesh@xpressbank",
+          note: "Blocked by TrustCheck",
+          category: "transfer",
+          timestamp: now,
+          status: "blocked",
+          riskScore: combinedScore,
+          trustCheckFlagged: true,
+        } as unknown as Transaction);
+        writeData("transactions.json", txns);
+      } catch { /* non-fatal */ }
     }
 
     // ── 8. QStash event ──────────────────────────────────────────────────────

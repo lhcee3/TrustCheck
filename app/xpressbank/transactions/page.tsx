@@ -47,6 +47,14 @@ function TxRow({ tx, desktop }: { tx: Transaction; desktop?: boolean }) {
   );
 }
 
+const SESSION_KEY = "xb_session_txns";
+
+function getSessionTxns(): Transaction[] {
+  try {
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? "[]") as Transaction[];
+  } catch { return []; }
+}
+
 export default function TransactionsPage() {
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -59,8 +67,22 @@ export default function TransactionsPage() {
     setLoading(true);
     try {
       const type = f === "all" ? undefined : f;
-      const data = await api.getTransactions({ type, search: s || undefined });
-      setTransactions(data);
+      const apiData = await api.getTransactions({ type, search: s || undefined });
+      // Merge session transactions (this session's attempts) with API data
+      const sessionTxns = getSessionTxns().filter((t) => {
+        if (type && t.type !== type && t.status !== type) return false;
+        if (s) {
+          const q = s.toLowerCase();
+          return t.recipientName?.toLowerCase().includes(q) ||
+            t.recipientUpi?.toLowerCase().includes(q) ||
+            t.note?.toLowerCase().includes(q);
+        }
+        return true;
+      });
+      // Deduplicate — session txns take priority, remove dupes from API
+      const sessionIds = new Set(sessionTxns.map((t) => t.id));
+      const merged = [...sessionTxns, ...apiData.filter((t) => !sessionIds.has(t.id))];
+      setTransactions(merged);
     } catch { /* keep stale */ }
     finally { setLoading(false); }
   }

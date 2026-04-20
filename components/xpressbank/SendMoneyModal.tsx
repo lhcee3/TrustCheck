@@ -30,6 +30,16 @@ async function firePushAlert(riskScore: number) {
   }
 }
 
+const SESSION_KEY = "xb_session_txns";
+
+function saveToSession(tx: Record<string, unknown>) {
+  try {
+    const existing = JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? "[]") as Record<string, unknown>[];
+    existing.unshift(tx);
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(existing.slice(0, 100)));
+  } catch { /* ignore */ }
+}
+
 export default function SendMoneyModal({ onClose, onSuccess, onFraudPrevented, prefillUpi = "", prefillName = "" }: Props) {
   const [upiId, setUpiId] = useState(prefillUpi);
   const [amount, setAmount] = useState("");
@@ -85,7 +95,28 @@ export default function SendMoneyModal({ onClose, onSuccess, onFraudPrevented, p
       setSending(false);
     }
 
-    if (result?.flagged) { firePushAlert(result.riskScore); setShowWarning(true); return; }
+    if (result?.flagged) {
+      firePushAlert(result.riskScore);
+      // Save blocked attempt to session so it shows in statements
+      saveToSession({
+        id: `blocked_${Date.now()}`,
+        userId: "user_ramesh_001",
+        type: "sent",
+        amount: Number(amount),
+        recipientName: prefillName || upiId.trim(),
+        recipientUpi: upiId.trim(),
+        senderName: "Ramesh Kumar",
+        senderUpi: "ramesh@xpressbank",
+        note,
+        category: "transfer",
+        timestamp: new Date().toISOString(),
+        status: "blocked",
+        riskScore: result.riskScore,
+        trustCheckFlagged: true,
+      });
+      setShowWarning(true);
+      return;
+    }
 
     await doSend(result?.riskScore ?? 0, result?.flagged ?? false);
   }
@@ -99,6 +130,23 @@ export default function SendMoneyModal({ onClose, onSuccess, onFraudPrevented, p
         amount: Number(amount),
         note,
         category: "transfer",
+        riskScore,
+        trustCheckFlagged,
+      });
+      // Save to session so statements tab shows it immediately
+      saveToSession({
+        id: res.transaction.id,
+        userId: "user_ramesh_001",
+        type: "sent",
+        amount: Number(amount),
+        recipientName: prefillName || upiId.trim(),
+        recipientUpi: upiId.trim(),
+        senderName: "Ramesh Kumar",
+        senderUpi: "ramesh@xpressbank",
+        note,
+        category: "transfer",
+        timestamp: res.transaction.timestamp,
+        status: "success",
         riskScore,
         trustCheckFlagged,
       });
